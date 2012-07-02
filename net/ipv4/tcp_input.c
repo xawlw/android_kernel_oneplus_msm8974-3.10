@@ -3475,7 +3475,7 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 		if (dst)
 			dst_confirm(dst);
 	}
-
+	
 	if (icsk->icsk_pending == ICSK_TIME_RETRANS)
 		tcp_schedule_loss_probe(sk);
 	if (tp->srtt != prior_rtt || tp->snd_cwnd != prior_cwnd)

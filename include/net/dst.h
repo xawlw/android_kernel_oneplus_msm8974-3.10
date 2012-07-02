@@ -61,6 +61,8 @@ struct dst_entry {
 
 	unsigned short		pending_confirm;
 
+	unsigned short		pending_confirm;
+
 	short			error;
 
 	/* A non-zero value of dst->obsolete forces by-hand validation
@@ -362,7 +364,8 @@ static inline struct dst_entry *skb_dst_pop(struct sk_buff *skb)
 
 extern int dst_discard(struct sk_buff *skb);
 extern void *dst_alloc(struct dst_ops *ops, struct net_device *dev,
-		       int initial_ref, int initial_obsolete, int flags);
+		       int initial_ref, int initial_obsolete,
+		       unsigned short flags);
 extern void __dst_free(struct dst_entry *dst);
 extern struct dst_entry *dst_destroy(struct dst_entry *dst);
 
@@ -392,15 +395,11 @@ static inline void dst_confirm(struct dst_entry *dst)
 static inline int dst_neigh_output(struct dst_entry *dst, struct neighbour *n,
 				   struct sk_buff *skb)
 {
-	const struct hh_cache *hh;
+	struct hh_cache *hh;
 
-	if (dst->pending_confirm) {
-		unsigned long now = jiffies;
-
+	if (unlikely(dst->pending_confirm)) {
+		n->confirmed = jiffies;
 		dst->pending_confirm = 0;
-		/* avoid dirtying neighbour */
-		if (n->confirmed != now)
-			n->confirmed = now;
 	}
 
 	hh = &n->hh;
