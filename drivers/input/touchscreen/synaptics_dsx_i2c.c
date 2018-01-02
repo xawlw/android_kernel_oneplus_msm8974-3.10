@@ -2409,10 +2409,11 @@ static void vkey_simulate(unsigned char finger, int button)
 static int vkey_release(unsigned char finger)
 {
 	int button = -1;
+	int i;
 
 	if(!pressed_vkey) return 0;
 
-	for(int i=0; i<3; i++)
+	for(i=0; i<3; i++)
 	{
 		if(vkey_finger[i] == finger)
 		{
